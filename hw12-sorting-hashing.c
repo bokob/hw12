@@ -223,7 +223,7 @@ int bubbleSort(int *a)	// 버블정렬
 
 	for(i = 0; i < MAX_ARRAY_SIZE; i++)	// MAX_ARRAY_SIZE 크기만큼 반복
 	{
-		for (j = 0; j < MAX_ARRAY_SIZE; j++)	// MAX_ARRAY_SIZE 크기만큼 반복
+		for (j = 0; j < MAX_ARRAY_SIZE-1; j++)	// MAX_ARRAY_SIZE -1 크기만큼 반복
 		{
 			if (a[j-1] > a[j])	// a[j-1]이 a[j]보다 큰 경우
 			{
