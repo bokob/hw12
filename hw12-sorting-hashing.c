@@ -3,41 +3,34 @@
 #include <time.h>
 
 #define MAX_ARRAY_SIZE			13	/* prime number */
-#define MAX_HASH_TABLE_SIZE 	MAX_ARRAY_SIZE
+#define MAX_HASH_TABLE_SIZE 	MAX_ARRAY_SIZE // ÇØ½Ã Å×ÀÌºíÀÇ Å©±â¸¦ MAX_ARRAY_SIZE·Î Á¤ÀÇ
 
-/* í•„ìš”ì— ë”°ë¼ í•¨ìˆ˜ ì¶”ê°€ ê°€ëŠ¥ */
-int initialize(int **a);
-int freeArray(int *a);
-void printArray(int *a);
+int initialize(int **a);		// ¹è¿­ »ı¼º
+int freeArray(int *a);			// ¹è¿­ ÇØÁ¦
+void printArray(int *a);		// ¹è¿­ Ãâ·Â
 
-int selectionSort(int *a);
-int insertionSort(int *a);
-int bubbleSort(int *a);
-int shellSort(int *a);
-/* recursive functionìœ¼ë¡œ êµ¬í˜„ */
-int quickSort(int *a, int n);
+int selectionSort(int *a);		// ¼±ÅÃÁ¤·Ä
+int insertionSort(int *a);		// »ğÀÔÁ¤·Ä
+int bubbleSort(int *a); 		// ¹öºíÁ¤·Ä
+int shellSort(int *a);			// ¼ĞÁ¤·Ä
+int quickSort(int *a, int n);	// ÄüÁ¤·Ä
 
+int hashCode(int key);	// ÇØ½Ã ÄÚµå »ı¼º
 
-/* hash code generator, key % MAX_HASH_TABLE_SIZE */
-int hashCode(int key);
+int hashing(int *a, int **ht);	// ¹è¿­ a¿¡ ´ëÇÑ hash table »ı¼º
 
-/* array aì—ëŒ€ í•œ hash tableì„ ë§Œë“ ë‹¤. */
-int hashing(int *a, int **ht);
-
-/* hash tableì—ì„œ keyë¥¼ ì°¾ì•„ hash tableì˜ index return */
-int search(int *ht, int key);
-
+int search(int *ht, int key); // ÇØ½Ã Å×ÀÌºí¿¡¼­ key¸¦ Ã£¾Æ ÇØ½Ã Å×ÀÌºíÀÇ ÀÎµ¦½º ¹İÈ¯
 
 int main()
 {
 	char command;
-	int *array = NULL;
+	int *array = NULL;	
 	int *hashtable = NULL;
 	int key = -1;
 	int index = -1;
 
 	srand(time(NULL));
-
+	printf("[-------------------- [º¹¹«Ã¢] [2021040021] --------------------]\n");
 	do{
 		printf("----------------------------------------------------------------\n");
 		printf("                        Sorting & Hashing                       \n");
@@ -110,147 +103,157 @@ int main()
 	return 1;
 }
 
-int initialize(int** a)
+int initialize(int** a)		// ¹è¿­ »ı¼º
 {
-	int *temp = NULL;
+	int *temp = NULL;		// int¿¡ ´ëÇÑ Æ÷ÀÎÅÍ temp¿¡ NULLÀ» ³Ö´Â´Ù.
 
-	/* arrayê°€ NULLì¸ ê²½ìš° ë©”ëª¨ë¦¬ í• ë‹¹ */
-	if(*a == NULL) {
+	/* array°¡ NULLÀÎ °æ¿ì ¸Ş¸ğ¸® ÇÒ´ç */
+	if(*a == NULL) // a°¡ °¡¸®Å°´Â °÷ÀÌ NULLÀÎ °æ¿ì. ¹è¿­ÀÌ ¾ø´Â °æ¿ì
+	{
 		temp = (int*)malloc(sizeof(int) * MAX_ARRAY_SIZE);
-		*a = temp;  /* í• ë‹¹ëœ ë©”ëª¨ë¦¬ì˜ ì£¼ì†Œë¥¼ ë³µì‚¬ --> mainì—ì„œ ë°°ì—´ì„ control í• ìˆ˜ ìˆë„ë¡ í•¨*/
-	} else
-		temp = *a;
+		// ¸Ş¸ğ¸®ÀÇ Heap ¿µ¿ª¿¡ intÇü ÀÚ·áÀÇ Å©±â x MAX_ARRAY_SIZE ¸¸Å­ÀÇ °ø°£À» ¸¸µé°í, 
+		// ±×°÷ÀÇ ÁÖ¼Ò¸¦ temp¿¡ ³Ö´Â´Ù.
+		*a = temp;  /* ÇÒ´çµÈ ¸Ş¸ğ¸®ÀÇ ÁÖ¼Ò¸¦ º¹»ç --> main¿¡¼­ ¹è¿­À» control ÇÒ¼ö ÀÖµµ·Ï ÇÔ*/
+	} else	// a°¡ °¡¸®Å°´Â °÷ÀÌ NULLÀÌ ¾Æ´Ñ °æ¿ì. ¹è¿­ÀÌ Á¸ÀçÇÏ´Â °æ¿ì
+		temp = *a;	// temp¿¡ a°¡ °¡¸®Å°´Â °÷¿¡ µé¾îÀÖ´Â ÁÖ¼Ò¸¦ ³Ö´Â´Ù.
 
-	/* ëœë¤ê°’ì„ ë°°ì—´ì˜ ê°’ìœ¼ë¡œ ì €ì¥ */
-	for(int i = 0; i < MAX_ARRAY_SIZE; i++)
-		temp[i] = rand() % MAX_ARRAY_SIZE;
+	for(int i = 0; i < MAX_ARRAY_SIZE; i++)	// MAX_ARRAY_SIZE¹ø ¹İº¹
+		temp[i] = rand() % MAX_ARRAY_SIZE;	// ·£´ı°ªÀ» ¹è¿­ÀÇ °ªÀ¸·Î ÀúÀå
 
 	return 0;
 }
 
-int freeArray(int *a)
+int freeArray(int *a)	// ¹è¿­ ÇØÁ¦
 {
-	if(a != NULL)
-		free(a);
+	if(a != NULL)	// a°¡ NULLÀÌ ¾Æ´Ñ °æ¿ì. ¹è¿­ÀÌ Á¸ÀçÇÏ´Â °æ¿ì
+		free(a);	// a ÇØÁ¦
 	return 0;
 }
 
-void printArray(int *a)
+void printArray(int *a)	// ¹è¿­ Ãâ·Â
 {
-	if (a == NULL) {
-		printf("nothing to print.\n");
+	if (a == NULL)	// a°¡ NULLÀÎ °æ¿ì. ¹è¿­ÀÌ Á¸ÀçÇÏÁö ¾Ê´Â °æ¿ì 
+	{
+		printf("nothing to print.\n");	// Ãâ·ÂÇÒ °ÍÀÌ ¾ø´Ù´Â ¹®±¸ Ãâ·Â
 		return;
 	}
+
 	for(int i = 0; i < MAX_ARRAY_SIZE; i++)
-		printf("a[%02d] ", i);
+		printf("a[%02d] ", i);					// ¹è¿­ ÀÎµ¦½º Ãâ·Â
 	printf("\n");
 	for(int i = 0; i < MAX_ARRAY_SIZE; i++)
-		printf("%5d ", a[i]);
+		printf("%5d ", a[i]);					// ¹è¿­ °ª Ãâ·Â
 	printf("\n");
 }
 
 
-int selectionSort(int *a)
+int selectionSort(int *a) 	// ¼±ÅÃÁ¤·Ä
 {
-	int min;
-	int minindex;
-	int i, j;
+	int min;			// ÃÖ¼Ú°ª ÀúÀåÇÒ intÇü º¯¼ö min
+	int minindex;		// ÃÖ¼Ú°ªÀÇ ÀÎµ¦½º ÀúÀåÇÒ intÇü º¯¼ö minindex		
 
 	printf("Selection Sort: \n");
 	printf("----------------------------------------------------------------\n");
 
-	printArray(a);
+	printArray(a); // Á¤·Ä Àü ¹è¿­ Ãâ·Â
 
-	for (i = 0; i < MAX_ARRAY_SIZE; i++)
+	for (int i = 0; i < MAX_ARRAY_SIZE; i++)
 	{
-		minindex = i;
-		min = a[i];
-		for(j = i+1; j < MAX_ARRAY_SIZE; j++)
+		minindex = i;	// minindex¿¡ iÀÇ °ªÀ» ³Ö´Â´Ù.
+		min = a[i];		// min¿¡ a[i]ÀÇ °ªÀ» ³Ö´Â´Ù.
+		for(int j = i+1; j < MAX_ARRAY_SIZE; j++)	
+		// i¹øÂ° ÀÎµ¦½º ÀÌÈÄÀÇ °Íµé°ú ºñ±³¸¦ ½ÃÀÛÇÏ¸é¼­ ÃÖ¼Ú°ª°ú ÃÖ¼Ú°ªÀÇ ÀÎµ¦½º¸¦ Ã£´Â´Ù.
 		{
-			if (min > a[j])
+			if (min > a[j])	// minÀÌ a[j]º¸´Ù Å« °æ¿ì.
 			{
-				min = a[j];
-				minindex = j;
+				min = a[j];		// min¿¡ a[j]ÀÇ °ªÀ» ³Ö´Â´Ù.
+				minindex = j;	// minindex¿¡ j¸¦ ³Ö´Â´Ù.
 			}
 		}
-		a[minindex] = a[i];
-		a[i] = min;
+		// À§¿¡¼­ Ã£Àº »õ·Î¿î ÃÖ¼Ú°ª°ú ÃÖ¼Ú°ªÀÇ ÀÎµ¦½º¸¦ ¾÷µ¥ÀÌÆ®ÇÑ´Ù.
+		a[minindex] = a[i];	// a[minindex]¿¡ a[i]ÀÇ °ªÀ» ³Ö´Â´Ù.
+		a[i] = min;	// a[i]¿¡ minÀÇ °ªÀ» ³Ö´Â´Ù.
 	}
 
 	printf("----------------------------------------------------------------\n");
-	printArray(a);
+	printArray(a);	// Á¤·Ä ÈÄ ¹è¿­ Ãâ·Â
 	return 0;
 }
 
-int insertionSort(int *a)
+int insertionSort(int *a)	// »ğÀÔÁ¤·Ä
 {
 	int i, j, t;
 
 	printf("Insertion Sort: \n");
 	printf("----------------------------------------------------------------\n");
 
-	printArray(a);
+	printArray(a);	// Á¤·Ä Àü ¹è¿­ Ãâ·Â
 
-	for(i = 1; i < MAX_ARRAY_SIZE; i++)
+	for(i = 1; i < MAX_ARRAY_SIZE; i++)	
+	// 0¹øÂ° ÀÎµ¦½º¿¡ ÀÖ´Â °ªÀº Á¤·ÄµÈ °ÍÀ¸·Î Ãë±ŞÇÏ¹Ç·Î i°¡ 1ºÎÅÍ ½ÃÀÛ
 	{
-		t = a[i];
-		j = i;
-		while (a[j-1] > t && j > 0)
+		t = a[i];	// t¿¡ a[i]ÀÇ °ªÀ» ³Ö´Â´Ù.
+		j = i;		// j¿¡ iÀÇ °ªÀ» ³Ö´Â´Ù.
+		while (a[j-1] > t && j > 0)	
+		//  »ğÀÔµÉ °ª t°¡ a[j-1]ÀÇ °ªº¸´Ù ÀÛ°í, j°¡ 0º¸´Ù Å« °æ¿ì¿¡ ¹İº¹
+		// Á¤·ÄµÇÁö ¾ÊÀº ºÎºĞ¿¡¼­ ÀÏ¾î³ª´Â ÀÏÀÌ´Ù.
 		{
-			a[j] = a[j-1];
-			j--;
+			a[j] = a[j-1];	// a[j]¿¡ a[j-1]À» ³Ö´Â´Ù.
+			j--;			// j´Â 1 °¨¼Ò
 		}
-		a[j] = t;
+		a[j] = t;	// a[j]¿¡ t¸¦ ³Ö´Â´Ù.
 	}
 
 	printf("----------------------------------------------------------------\n");
-	printArray(a);
+	printArray(a);	// Á¤·Ä ÈÄ ¹è¿­ Ãâ·Â
 
 	return 0;
 }
 
-int bubbleSort(int *a)
+int bubbleSort(int *a)	// ¹öºíÁ¤·Ä
 {
 	int i, j, t;
 
 	printf("Bubble Sort: \n");
 	printf("----------------------------------------------------------------\n");
 
-	printArray(a);
+	printArray(a);	// Á¤·Ä Àü ¹è¿­ Ãâ·Â
 
-	for(i = 0; i < MAX_ARRAY_SIZE; i++)
+	for(i = 0; i < MAX_ARRAY_SIZE; i++)	// MAX_ARRAY_SIZE Å©±â¸¸Å­ ¹İº¹
 	{
-		for (j = 0; j < MAX_ARRAY_SIZE; j++)
+		for (j = 0; j < MAX_ARRAY_SIZE; j++)	// MAX_ARRAY_SIZE Å©±â¸¸Å­ ¹İº¹
 		{
-			if (a[j-1] > a[j])
+			if (a[j-1] > a[j])	// a[j-1]ÀÌ a[j]º¸´Ù Å« °æ¿ì
 			{
-				t = a[j-1];
-				a[j-1] = a[j];
-				a[j] = t;
+				t = a[j-1];		// t¿¡ a[j-1]ÀÇ °ªÀ» ³Ö´Â´Ù.
+				a[j-1] = a[j];	// a[j-1]¿¡ a[j]ÀÇ °ªÀ» ³Ö´Â´Ù.
+				a[j] = t;		// a[j]¿¡ tÀÇ °ªÀ» ³Ö´Â´Ù.
 			}
 		}
 	}
 
 	printf("----------------------------------------------------------------\n");
-	printArray(a);
+	printArray(a);	// Á¤·Ä ÈÄ ¹è¿­ Ãâ·Â
 
 	return 0;
 }
 
-int shellSort(int *a)
+int shellSort(int *a)	// ¼ĞÁ¤·Ä
 {
 	int i, j, k, h, v;
 
 	printf("Shell Sort: \n");
 	printf("----------------------------------------------------------------\n");
 
-	printArray(a);
+	printArray(a);	// Á¤·Ä Àü ¹è¿­ Ãâ·Â
 
-	for (h = MAX_ARRAY_SIZE/2; h > 0; h /= 2)
+	for (h = MAX_ARRAY_SIZE/2; h > 0; h /= 2) // h´Â ºÎºĞÁıÇÕÀÇ ±âÁØÀÌ µÇ´Â °£°İ
+	// h¿¡ MAX_ARRAY_SIZE / 2 ÀÇ °ªÀ» ³Ö´Â´Ù. h´Â 1/2¾¿ ÁÙ¾îµç´Ù. ÀÌ ÀÏÀ» h°¡ 0º¸´Ù Å« °æ¿ì¿¡¸¸ ¹İº¹ 
 	{
-		for (i = 0; i < h; i++)
+		for (i = 0; i < h; i++)	// hÀÇ Å©±â ¸¸Å­ ¹İº¹
 		{
 			for(j = i + h; j < MAX_ARRAY_SIZE; j += h)
+			// 
 			{
 				v = a[j];
 				k = j;
@@ -264,12 +267,12 @@ int shellSort(int *a)
 		}
 	}
 	printf("----------------------------------------------------------------\n");
-	printArray(a);
+	printArray(a);	// Á¤·Ä ÈÄ ¹è¿­ Ãâ·Â
 
 	return 0;
 }
 
-int quickSort(int *a, int n)
+int quickSort(int *a, int n)	// ÄüÁ¤·Ä
 {
 	int v, t;
 	int i, j;
@@ -302,29 +305,29 @@ int quickSort(int *a, int n)
 	return 0;
 }
 
-int hashCode(int key) {
-   return key % MAX_HASH_TABLE_SIZE;
+int hashCode(int key) // ÇØ½Ã ÄÚµå »ı¼º
+{
+   return key % MAX_HASH_TABLE_SIZE; // ÀÔ·Â¹ŞÀº key¸¦ MAX_HASH_TABLE_SIZE·Î ³ª´« ³ª¸ÓÁö ¹İÈ¯
 }
 
-int hashing(int *a, int **ht)
+int hashing(int *a, int **ht)	// ¹è¿­ a¿¡ ´ëÇÑ hash table »ı¼º
 {
 	int *hashtable = NULL;
 
-	/* hash tableì´ NULLì¸ ê²½ìš° ë©”ëª¨ë¦¬ í• ë‹¹ */
-	if(*ht == NULL) {
+	/* hash tableÀÌ NULLÀÎ °æ¿ì ¸Ş¸ğ¸® ÇÒ´ç */
+	if(*ht == NULL) 
+	{
 		hashtable = (int*)malloc(sizeof(int) * MAX_ARRAY_SIZE);
-		*ht = hashtable;  /* í• ë‹¹ëœ ë©”ëª¨ë¦¬ì˜ ì£¼ì†Œë¥¼ ë³µì‚¬ --> mainì—ì„œ ë°°ì—´ì„ control í• ìˆ˜ ìˆë„ë¡ í•¨*/
-	} else {
-		hashtable = *ht;	/* hash tableì´ NULLì´ ì•„ë‹Œê²½ìš°, table ì¬í™œìš©, reset to -1 */
+		*ht = hashtable;  
+		/* ÇÒ´çµÈ ¸Ş¸ğ¸®ÀÇ ÁÖ¼Ò¸¦ º¹»ç --> main¿¡¼­ ¹è¿­À» control ÇÒ¼ö ÀÖµµ·Ï ÇÔ*/
+	} 
+	else 
+	{
+		hashtable = *ht;	/* hash tableÀÌ NULLÀÌ ¾Æ´Ñ°æ¿ì, table ÀçÈ°¿ë, reset to -1 */
 	}
 
 	for(int i = 0; i < MAX_HASH_TABLE_SIZE; i++)
 		hashtable[i] = -1;
-
-	/*
-	for(int i = 0; i < MAX_HASH_TABLE_SIZE; i++)
-		printf("hashtable[%d] = %d\n", i, hashtable[i]);
-	*/
 
 	int key = -1;
 	int hashcode = -1;
@@ -333,22 +336,19 @@ int hashing(int *a, int **ht)
 	{
 		key = a[i];
 		hashcode = hashCode(key);
-		/*
-		printf("key = %d, hashcode = %d, hashtable[%d]=%d\n", key, hashcode, hashcode, hashtable[hashcode]);
-		*/
+	
 		if (hashtable[hashcode] == -1)
 		{
 			hashtable[hashcode] = key;
-		} else 	{
+		} 
+		else 	
+		{
 
 			index = hashcode;
 
 			while(hashtable[index] != -1)
 			{
-				index = (++index) % MAX_HASH_TABLE_SIZE;
-				/*
-				printf("index = %d\n", index);
-				*/
+				index = (++index) % MAX_HASH_TABLE_SIZE
 			}
 			hashtable[index] = key;
 		}
@@ -357,19 +357,18 @@ int hashing(int *a, int **ht)
 	return 0;
 }
 
-int search(int *ht, int key)
+int search(int *ht, int key)	// ÇØ½Ã Å×ÀÌºí¿¡¼­ key¸¦ Ã£¾Æ ÇØ½Ã Å×ÀÌºíÀÇ ÀÎµ¦½º ¹İÈ¯
 {
-	int index = hashCode(key);
+	int index = hashCode(key);	
+	// index¿¡ hashCode(key)ÀÇ °á°ú·Î »ı¼ºµÇ´Â ÇØ½ÃÄÚµå¸¦ ³Ö´Â´Ù.
 
-	if(ht[index] == key)
-		return index;
+	if(ht[index] == key)	// ht[index]ÀÇ °ªÀÌ ÀÔ·Â¹ŞÀº key¿Í °°Àº °æ¿ì
+		return index;	// index ¹İÈ¯
 
-	while(ht[++index] != key)
+	while(ht[++index] != key)	// ht[++index]°¡ ÀÔ·Â¹ŞÀº key°¡ ¾Æ´Ñ °æ¿ì¿¡ ¹İº¹
 	{
 		index = index % MAX_HASH_TABLE_SIZE;
+		// index¿¡ index¸¦ MAX_HASH_TABLE_SIZE·Î ³ª´³À» ¶§ÀÇ ³ª¸ÓÁö¸¦ ³Ö´Â´Ù.
 	}
-	return index;
+	return index;	//  ÀÎµ¦½º ¹İÈ¯
 }
-
-
-
