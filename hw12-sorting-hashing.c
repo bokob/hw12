@@ -264,11 +264,11 @@ int bubbleSort(int *a)	// 버블정렬
 	{
 		for (j = 0; j < MAX_ARRAY_SIZE-1; j++)	// MAX_ARRAY_SIZE -1 크기만큼 반복
 		{
-			if (a[j-1] > a[j])	// a[j-1]이 a[j]보다 큰 경우
+			if (a[j] > a[j+1])	// a[j]가 a[j+1]보다 큰 경우
 			{
-				t = a[j-1];		// t에 a[j-1]의 값을 넣는다.
-				a[j-1] = a[j];	// a[j-1]에 a[j]의 값을 넣는다.
-				a[j] = t;		// a[j]에 t의 값을 넣는다.
+				t = a[j];		// t에 a[j]의 값을 넣는다.
+				a[j] = a[j+1];	// a[j]에 a[j+1]의 값을 넣는다.
+				a[j+1] = t;		// a[j+1]에 t의 값을 넣는다.
 			}
 		}
 	}
