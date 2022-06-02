@@ -3,7 +3,8 @@
 #include <time.h>
 
 #define MAX_ARRAY_SIZE			13	/* prime number */
-#define MAX_HASH_TABLE_SIZE 	MAX_ARRAY_SIZE // 해시 테이블의 크기를 MAX_ARRAY_SIZE로 정의
+#define MAX_HASH_TABLE_SIZE 	MAX_ARRAY_SIZE 
+// 해시 테이블의 크기를 MAX_ARRAY_SIZE로 정의. 충돌을 막기 위해 소수로 하는 것이 좋다.
 
 int initialize(int **a);		// 배열 생성
 int freeArray(int *a);			// 배열 해제
@@ -29,6 +30,8 @@ int main()
 	int key = -1;
 	int index = -1;
 
+	int flag = 0;
+
 	srand(time(NULL));
 	printf("[-------------------- [복무창] [2021040021] --------------------]\n");
 	do{
@@ -48,23 +51,49 @@ int main()
 		switch(command) {
 		case 'z': case 'Z':
 			initialize(&array);
+			flag = 1;
 			break;
 		case 'q': case 'Q':
 			freeArray(array);
 			break;
 		case 's': case 'S':
+			if(flag == 0)
+			{
+				printf("Please Initialize!\n");
+				break;
+			}
 			selectionSort(array);
 			break;
 		case 'i': case 'I':
+			if(flag == 0)
+			{
+				printf("Please Initialize!\n");
+				break;
+			}
 			insertionSort(array);
 			break;
 		case 'b': case 'B':
+			if(flag == 0)
+			{
+				printf("Please Initialize!\n");
+				break;
+			}
 			bubbleSort(array);
 			break;
 		case 'l': case 'L':
+			if(flag == 0)
+			{
+				printf("Please Initialize!\n");
+				break;
+			}
 			shellSort(array);
 			break;
 		case 'k': case 'K':
+			if(flag == 0)
+			{
+				printf("Please Initialize!\n");
+				break;
+			}
 			printf("Quick Sort: \n");
 			printf("----------------------------------------------------------------\n");
 			printArray(array);
@@ -75,6 +104,11 @@ int main()
 			break;
 
 		case 'h': case 'H':
+			if(flag == 0)
+			{
+				printf("Please Initialize!\n");
+				break;
+			}
 			printf("Hashing: \n");
 			printf("----------------------------------------------------------------\n");
 			printArray(array);
@@ -83,6 +117,11 @@ int main()
 			break;
 
 		case 'e': case 'E':
+			if(flag == 0)
+			{
+				printf("Please Initialize!\n");
+				break;
+			}
 			printf("Your Key = ");
 			scanf("%d", &key);
 			printArray(hashtable);
@@ -334,8 +373,7 @@ int hashing(int *a, int **ht)	// 배열 a에 대한 hash table 생성
 	{
 		hashtable = (int*)malloc(sizeof(int) * MAX_ARRAY_SIZE);
 		/* 메모리의 Heap 영역에 4바이트 * MAX_ARRAY_SIZE 만큼의 크기를 만들고,
-		그곳의 주소를 hashtable에 넣는다.
-
+		그곳의 주소를 hashtable에 넣는다. */
 		*ht = hashtable;  
 		/* 할당된 메모리의 주소를 복사 --> main에서 배열을 control 할수 있도록 함*/
 	} 
