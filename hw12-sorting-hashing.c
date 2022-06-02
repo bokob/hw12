@@ -126,6 +126,11 @@ int main()
 			scanf("%d", &key);
 			printArray(hashtable);
 			index = search(hashtable, key);
+			if(index == -1)	// index가 -1인 경우
+			{
+				printf("Can't find!\n");	// 찾을 수 없다는 문구 출력
+				break;
+			}
 			printf("key = %d, index = %d,  hashtable[%d] = %d\n", key, index, index, hashtable[index]);
 			break;
 
@@ -427,6 +432,8 @@ int search(int *ht, int key)	// 해시 테이블에서 key를 찾아 해시 테이블의 인덱스 
 	int index = hashCode(key);	
 	// index에 hashCode(key)의 결과로 생성되는 해시코드를 넣는다.
 
+	int count = 1;	// 해시 테이블 탐색 횟수를 저장할 변수
+
 	if(ht[index] == key)	// ht[index]의 값이 입력받은 key와 같은 경우
 		return index;	// index 반환
 
@@ -434,6 +441,13 @@ int search(int *ht, int key)	// 해시 테이블에서 key를 찾아 해시 테이블의 인덱스 
 	{
 		index = index % MAX_HASH_TABLE_SIZE;
 		// index에 index를 MAX_HASH_TABLE_SIZE로 나눴을 때의 나머지를 넣는다.
+
+		count++;	// count 1 증가
+
+		if(count == MAX_HASH_TABLE_SIZE)	// MAX_HASH_TABLE 크기 만큼 탐색한 경우
+		{
+			return -1;	// -1 반환
+		}
 	}
 
 	return index;	//  인덱스 반환
