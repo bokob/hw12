@@ -127,7 +127,7 @@ int freeArray(int *a)	// 배열 해제
 {
 	if(a != NULL)	// a가 NULL이 아닌 경우. 배열이 존재하는 경우
 		free(a);	// a 해제
-		
+
 	return 0;
 }
 
@@ -371,7 +371,7 @@ int hashing(int *a, int **ht)	// 배열 a에 대한 hash table 생성
 			while(hashtable[index] != -1)
 			// hashtable[index] 가 -1이 아닌 경우 반복
 			{
-				index = (++index) % MAX_HASH_TABLE_SIZE
+				index = (++index) % MAX_HASH_TABLE_SIZE;
 				/* index에 index에 1을 더하고 그 결과에 
 				MAX_HASH_TABLE_SIZE를 나눴을 때의 나머지를 넣는다.*/
 			}
